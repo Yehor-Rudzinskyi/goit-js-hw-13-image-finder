@@ -7,27 +7,29 @@ import infoFunction from './js/notifications';
 
 refs.searchForm.addEventListener('submit', event => {
     event.preventDefault();
-
+  refs.loadMoreBtn.classList.add('is-hidden');
     const form = event.currentTarget;
     apiService.query = form.elements.query.value;
-
-    form.reset();
 
     apiService.resetPage();
 
     refs.photoConteiner.innerHTML = '';
 
     apiService.fetchPhoto().then((hits) => {
-        infoFunction()
+        infoFunction(hits)
         createMarkup(hits);
-        refs.loadMoreBtn.classList.remove('is-hidden');
+        if (hits.length < 6) {
+            refs.loadMoreBtn.classList.add('is-hidden');
+        }  else if(hits.length !== 0)  {
+             refs.loadMoreBtn.classList.remove('is-hidden');
+        }
     });
 });
 
 
 refs.loadMoreBtn.addEventListener('click', () => {
     apiService.fetchPhoto().then((hits) => {
-        infoFunction()
+        infoFunction(hits)
         createMarkup(hits);
         window.scrollTo({
     top: document.documentElement.offsetHeight,
